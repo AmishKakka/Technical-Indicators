@@ -58,7 +58,28 @@ xarray<double> BollingerBands(int period, vector<double> price) {
     return bands;
 }
 
+// Calculating the Volume Weighted Average Price (VWAP) of the stock
+xarray<double> VolumeWeightedAveragePrice(int period, vector<double> price, vector<long long int> volume) {
+    xarray<double> price_volume;
+    vector<double> vwap;
 
+    vector<std::size_t> pshape = {price.size(), 1};
+    xarray<double> xprice = adapt(price, pshape);
+
+    vector<std::size_t> vshape = {volume.size(), 1};
+    xarray<double> xvolume = adapt(volume, vshape);
+
+    price_volume = xprice * xvolume;
+
+    for (int i=period; i<price.size(); i++) {
+        double vwap_i = sum(view(price_volume, range(i-period, i)))() / sum(view(xvolume, range(i-period, i)))();
+        vwap.push_back(vwap_i);
+    }
+    
+    vector<std::size_t> vwap_shape = {vwap.size(), 1};
+    auto xvwap = adapt(vwap, vwap_shape);
+    return xvwap;
+}
 
 
 int main() {
@@ -75,9 +96,15 @@ int main() {
     std::cout << "Total data points: " << total_points << std::endl;
 
 
-    xarray<double> bollinger = BollingerBands(20, csvData.Close);    
-    std::ofstream file("bollinger_results.csv");
-    dump_csv(file, bollinger);
-    std::cout << bollinger << std::endl;
+    // xarray<double> bollinger = BollingerBands(20, csvData.Close);    
+    // std::ofstream file("bollinger_results.csv");
+    // dump_csv(file, bollinger);
+    // std::cout << bollinger << std::endl;
+
+    xarray<double> vwap = VolumeWeightedAveragePrice(20, csvData.Close, csvData.Volume);
+    for (auto i:vwap) {
+        std::cout << i <<   "  " << std::endl;
+    }
+    std::cout << "VWAP vector size: " << vwap.size() ;
     return 0;   
 }
