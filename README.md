@@ -77,7 +77,7 @@ So, we can see here for the same query Python code using Numpy at the backend to
 But, the xtensor framework in C++ is ***just faster***, taking **0.099 ms**.
 
 ## Installation Steps
-1. I have used the **xtensor** library (it's like Numpy but for C++) to handle arrays and calculations. To install xtensor - 
+1. I have used the [**xtensor**](https://xtensor.readthedocs.io/en/latest/numpy.html) library (it's like Numpy but for C++) to handle arrays and calculations. To install xtensor - 
     ```sh
     git clone https://github.com/microsoft/vcpkg.git
 
@@ -87,8 +87,8 @@ But, the xtensor framework in C++ is ***just faster***, taking **0.099 ms**.
     ```
     
 
-2. Create a 'build' folder and move in it.
-    ```mkdir build && cd cuild```
+2. Inside this project folder on your terminal, create a 'build' folder and move in it.
+    ```mkdir build && cd build```
 
 3. Configure the project
     1. Debug mode ( Takes longer to run as compared to Release mode)
@@ -99,7 +99,7 @@ But, the xtensor framework in C++ is ***just faster***, taking **0.099 ms**.
     2. Release mode
         ```sh
         cmake .. -DCMAKE_BUILD_TYPE=Release \           
-            -DCMAKE_TOOLCHAIN_FILE=/path/to/vcpkg/scripts/buildsystems/vcpkg.cmake && cd..
+            -DCMAKE_TOOLCHAIN_FILE=/path/to/vcpkg/scripts/buildsystems/vcpkg.cmake && cd ..
         ```
 
 4. Compile and Run
@@ -119,3 +119,10 @@ But, the xtensor framework in C++ is ***just faster***, taking **0.099 ms**.
     ```sh
     pip3 install yfinance matplotlib
     ```
+
+# Pointers
+1. Add more indicators like RSI, Average True Range, and MACD.
+
+2. Find a way to use these functions (SMA, EMA, and others) through Python directly in code.
+
+3. Find Buy, Hold or Sell signals using these indicators and stock price.
