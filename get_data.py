@@ -26,12 +26,12 @@ def download_data(ticker, period, interval):
     
 df = download_data("AAPL", "10y", "1d")
 
-
 st = time()
+moving_avg_20 = df['Close'].rolling(window=20).mean()
 moving_avg_100 = df['Close'].rolling(window=100).mean()
 moving_avg_250 = df['Close'].rolling(window=250).mean()
 et = time()
-print("Execution time : ", et-st)
+print(f"Execution time : {et-st} seconds")
 
 
 

@@ -84,24 +84,23 @@ xarray<double> BollingerBands(int period, vector<double> price) {
 }
 
 // Calculating the Volume Weighted Average Price (VWAP) of the stock
-xarray<double> VolumeWeightedAveragePrice(int period, vector<double> price, vector<long long int> volume) {
+xarray<double> VolumeWeightedAveragePrice(vector<double> price, vector<long long int> volume) {
     xarray<double> price_volume;
-    vector<double> vwap;
+    int length = price.size();
+    xarray<double> vwap = empty<double>({length});
 
-    vector<std::size_t> pshape = {price.size(), 1};
-    xarray<double> xprice = adapt(price, pshape);
+    double cumulativePV = 0.0;
+    double cumulativeVol = 0.0;
 
-    vector<std::size_t> vshape = {volume.size(), 1};
-    xarray<double> xvolume = adapt(volume, vshape);
-
-    price_volume = xprice * xvolume;
-
-    for (int i=period; i<price.size(); i++) {
-        double vwap_i = sum(view(price_volume, range(i-period, i)))() / sum(view(xvolume, range(i-period, i)))();
-        vwap.push_back(vwap_i);
+    for (int i = 0; i < length; i++) {
+        cumulativePV += price[i] * (double)volume[i];
+        cumulativeVol += (double)volume[i];
+        
+        if (cumulativeVol > 0) {
+            vwap(i) = cumulativePV / cumulativeVol;
+        } else {
+            vwap(i) = 0.0;
+        }
     }
-    
-    vector<std::size_t> vwap_shape = {vwap.size(), 1};
-    auto xvwap = adapt(vwap, vwap_shape);
-    return xvwap;
+    return vwap;
 }
