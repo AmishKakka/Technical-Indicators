@@ -1,5 +1,7 @@
 import yfinance as yf
 from time import time
+import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
 
 def download_data(ticker, period, interval): 
     '''
@@ -18,7 +20,35 @@ def download_data(ticker, period, interval):
         print(df.head())
         df.to_csv(f"{ticker}_{period}_{interval}.csv")
         print("Downloaded")
+        return df
     except:
         print(f"Unable to download data for {period} and {interval}.")
     
-download_data("AAPL", "1mo", "90m")
+df = download_data("AAPL", "10y", "1d")
+
+
+st = time()
+moving_avg_100 = df['Close'].rolling(window=100).mean()
+moving_avg_250 = df['Close'].rolling(window=250).mean()
+et = time()
+print("Execution time : ", et-st)
+
+
+
+def plot(features: list, legend_labels: list):
+  plt.figure(figsize=(14, 7))
+  for i, f in enumerate(features):
+    plt.plot(f.index, f, label=legend_labels[i])
+
+  plt.title(f'Stock Price and Moving Averages')
+  plt.xlabel('Date')
+  plt.ylabel('Price')
+  plt.grid(True)
+  plt.legend()
+
+  ax = plt.gca()
+  ax.xaxis.set_major_locator(mdates.DayLocator(interval=1))
+  ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
+  plt.xticks(rotation=45, ha='right')
+  plt.tight_layout()
+  plt.show()

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <chrono>
 #include "csv.hpp"
 #include "indicators.hpp"
 
@@ -8,7 +9,7 @@ using std::vector;
 
 
 int main() {
-    struct DataFrame csvData = readCSV("AAPL_6mo_1h.csv");
+    struct DataFrame csvData = readCSV("AAPL_10y_1d.csv");
     long int total_points = csvData.Close.size();
 
     // for (long int i=0; i<total_points; i++) {
@@ -20,18 +21,28 @@ int main() {
     // }
     std::cout << "Total data points: " << total_points << std::endl;
 
+    auto start = std::chrono::high_resolution_clock::now();
+
     xarray<double> sma = SimpleMovingAverage(100, csvData.Close);
     std::cout << "100-SMA vector size: " << sma.size() << std::endl;
 
-    xarray<double> bollinger = BollingerBands(20, csvData.Close);    
-    std::ofstream file("bollinger_results.csv");
-    dump_csv(file, bollinger);
-    std::cout << bollinger << std::endl;
+    xarray<double> sma_250 = SimpleMovingAverage(250, csvData.Close);
+    std::cout << "250-SMA vector size: " << sma_250.size() << std::endl;
 
-    xarray<double> vwap = VolumeWeightedAveragePrice(20, csvData.Close, csvData.Volume);
-    for (auto i:vwap) {
-        std::cout << i <<   "  " << std::endl;
-    }
-    std::cout << "VWAP vector size: " << vwap.size() ;
-    return 0;   
+    xarray<double> bollinger = BollingerBands(20, csvData.Close);    
+    // std::ofstream file("bollinger_results.csv");
+    // dump_csv(file, bollinger);
+    // std::cout << bollinger << std::endl;
+
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> duration = end - start;
+
+    std::cout << "Execution time: " << duration.count() << " ms" << std::endl;
+
+    // xarray<double> vwap = VolumeWeightedAveragePrice(20, csvData.Close, csvData.Volume);
+    // for (auto i:vwap) {
+    //     std::cout << i <<   "  " << std::endl;
+    // }
+    // std::cout << "VWAP vector size: " << vwap.size() ;
+    // return 0;   
 }
