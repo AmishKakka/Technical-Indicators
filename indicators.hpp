@@ -10,7 +10,7 @@ using namespace xt;
 using std::vector;
 
 // Calculating Simple Moving Average over the price of the stock
-xarray<double> SimpleMovingAverage(int period, vector<double> price) {
+xarray<double> SimpleMovingAverage(int period, const vector<double>& price) {
     int length = price.size();
     if (length < period) {
         std::cout << "The length of 'prices' is less than 'period'." << std::endl;
@@ -36,7 +36,7 @@ xarray<double> SimpleMovingAverage(int period, vector<double> price) {
 }
 
 // Calculating the standard Deviation over the price of the stock
-xarray<double> StandardDeviation(int period, vector<double> price) {
+xarray<double> StandardDeviation(int period, const vector<double>& price) {
     int length = price.size();
     if (length < period || period == 0) {
         std::cout << "The length of 'prices' is less than 'period' OR 'period' is 0." << std::endl;
@@ -71,7 +71,7 @@ xarray<double> StandardDeviation(int period, vector<double> price) {
 }
 
 // Calculating the upper and lower price ranges of the Bollinger Band
-xarray<double> BollingerBands(int period, vector<double> price) {
+xarray<double> BollingerBands(int period, const vector<double>& price) {
     xarray<double> sma = SimpleMovingAverage(period, price);
     xarray<double> stdDev = StandardDeviation(period, price);
 
@@ -84,7 +84,7 @@ xarray<double> BollingerBands(int period, vector<double> price) {
 }
 
 // Calculating the Volume Weighted Average Price (VWAP) of the stock
-xarray<double> VolumeWeightedAveragePrice(vector<double> price, vector<long long int> volume) {
+xarray<double> VolumeWeightedAveragePrice(const vector<double>& price, const vector<long long int>& volume) {
     xarray<double> price_volume;
     int length = price.size();
     xarray<double> vwap = empty<double>({length});
@@ -103,4 +103,33 @@ xarray<double> VolumeWeightedAveragePrice(vector<double> price, vector<long long
         }
     }
     return vwap;
+}
+
+// Calculating the Exponential Moving Average (EMA) over the price of the stock
+xarray<double> ExponentialMovingAverage(int period, const vector<double>& price) {
+    int length = price.size();
+    if (length < period) {
+        std::cout << "The length of 'prices' is less than 'period'." << std::endl;
+        return xarray<double>();
+    }
+
+    int ema_size = length - period + 1;
+    xarray<double> ema = empty<double>({ema_size});
+
+    double smoothing = 2.0 / (period + 1);
+    double prevEMA = 0.0;
+    double currEMA = 0.0;
+    
+    // Setting the inital EMA as the SMA for given period.
+    for (int i=0; i<period; i++) {
+        prevEMA += price[i];
+    }
+    ema(0) = prevEMA / period;
+
+    for (int i=1; i<ema_size; i++) {
+        currEMA = (price[period+i-1] * smoothing) + (prevEMA * (1-smoothing));
+        ema(i) = currEMA;
+        prevEMA = currEMA;
+    }
+    return ema;
 }

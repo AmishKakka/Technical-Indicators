@@ -24,14 +24,14 @@ int main() {
     auto start = std::chrono::high_resolution_clock::now();
 
     // 20-SMA
-    xarray<double> sma_20 = SimpleMovingAverage(20, csvData.Close);
-    std::cout << "20-SMA vector size: " << sma_20.size() << std::endl;
+    // xarray<double> sma_20 = SimpleMovingAverage(20, csvData.Close);
+    // std::cout << "20-SMA vector size: " << sma_20.size() << std::endl;
     // 100-SMA
-    xarray<double> sma_100 = SimpleMovingAverage(100, csvData.Close);
-    std::cout << "100-SMA vector size: " << sma_100.size() << std::endl;
+    // xarray<double> sma_100 = SimpleMovingAverage(100, csvData.Close);
+    // std::cout << "100-SMA vector size: " << sma_100.size() << std::endl;
     // 250-SMA
-    xarray<double> sma_250 = SimpleMovingAverage(250, csvData.Close);
-    std::cout << "250-SMA vector size: " << sma_250.size() << std::endl;
+    // xarray<double> sma_250 = SimpleMovingAverage(250, csvData.Close);
+    // std::cout << "250-SMA vector size: " << sma_250.size() << std::endl;
 
     // Bollinger Bands
     // xarray<double> bollinger = BollingerBands(20, csvData.Close);    
@@ -42,6 +42,10 @@ int main() {
     // VWAP
     // xarray<double> vwap = VolumeWeightedAveragePrice(csvData.Close, csvData.Volume);
     // std::cout << "VWAP vector size: " << vwap.size() << std::endl;
+
+    // EMA
+    xarray<double> ema = ExponentialMovingAverage(20, csvData.Close);
+    std::cout << "EMA vector size: " << ema.size() << std::endl;
 
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::milli> duration = end - start;

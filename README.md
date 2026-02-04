@@ -109,7 +109,7 @@ But, the xtensor framework in C++ is ***just faster***, taking **0.099 ms**.
         ```
     2. Release mode
         ```sh 
-        cmake --build . --config Release && ./build/main
+        cmake --build ./build --config Release && ./build/main
         ```
 
 5. Removing the 'build' folder 
