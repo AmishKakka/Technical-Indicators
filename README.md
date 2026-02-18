@@ -98,8 +98,7 @@ But, the xtensor framework in C++ is ***just faster***, taking **0.099 ms**.
 
     2. Release mode
         ```sh
-        cmake .. -DCMAKE_BUILD_TYPE=Release \           
-            -DCMAKE_TOOLCHAIN_FILE=/path/to/vcpkg/scripts/buildsystems/vcpkg.cmake && cd ..
+        cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/path/to/vcpkg/scripts/buildsystems/vcpkg.cmake && cd ..
         ```
 
 4. Compile and Run

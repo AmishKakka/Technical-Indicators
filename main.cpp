@@ -40,12 +40,19 @@ int main() {
     // std::cout << bollinger << std::endl;
 
     // VWAP
-    // xarray<double> vwap = VolumeWeightedAveragePrice(csvData.Close, csvData.Volume);
+    // xarray<double> vwap = VolumeWeightedAveragePrice(csvData.High, csvData.Volume);
     // std::cout << "VWAP vector size: " << vwap.size() << std::endl;
 
     // EMA
-    xarray<double> ema = ExponentialMovingAverage(20, csvData.Close);
-    std::cout << "EMA vector size: " << ema.size() << std::endl;
+    // xarray<double> ema_10 = ExponentialMovingAverage(10, csvData.Close);
+    // std::cout << "EMA-10 vector size: " << ema_10.size() << std::endl;
+    // xarray<double> ema_26 = ExponentialMovingAverage(26, csvData.Close);
+    // std::cout << "EMA-26 vector size: " << ema_26.size() << std::endl;
+
+    // ATR
+    xarray<double> atr = AverageTrueRange(csvData.High, csvData.Low, csvData.Close, 14);
+    std::cout << "ATR vector size: " << atr.size() << std::endl;
+    std::cout << atr << std::endl;
 
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::milli> duration = end - start;

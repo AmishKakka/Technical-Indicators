@@ -133,3 +133,47 @@ xarray<double> ExponentialMovingAverage(int period, const vector<double>& price)
     }
     return ema;
 }
+
+// Calaculating the Average True Range of the stock over a period
+xarray<double> AverageTrueRange(
+    const vector<double>& high, const vector<double>& low, const vector<double>& close, 
+    int period=14) 
+{
+    int length = high.size();
+    if (length < period) {
+        std::cout << "The length of 'prices' is less than 'period'." << std::endl;
+        return xarray<double>();
+    }
+
+    int atr_size = length - period + 1;
+    xarray<double> atr = empty<double>({atr_size});
+
+    double tr = high[0] - low[0];
+    double p_atr = 0.0;
+    double prevClose = 0.0;
+
+    // Calculating True Range for length 'period'
+    for (int i=1; i<period; i++) {
+        tr += std::max({
+            high[i]-low[i], 
+            std::abs(high[i]-prevClose), 
+            std::abs(low[i]-prevClose)
+        });
+        prevClose = close[i];
+    }
+    p_atr = tr / period;    
+
+    // Calculating ATR 
+    for (int i=0; i<atr_size; i++) {
+        tr = std::max({
+            high[i+period-1]-low[i+period-1], 
+            std::abs(high[i+period-1]-prevClose), 
+            std::abs(low[i+period-1]-prevClose)
+        });
+        prevClose = close[i+period-2];
+        double curr_atr = ((p_atr * (period-1)) + tr) / period;
+        atr(i) = curr_atr;
+        p_atr = curr_atr;
+    }
+    return atr;
+}

@@ -2,3 +2,4 @@ build/
 env/
 commands.txt
 .vscode/
+.DS_Store
