@@ -34,10 +34,10 @@ int main() {
     // std::cout << "250-SMA vector size: " << sma_250.size() << std::endl;
 
     // Bollinger Bands
-    // xarray<double> bollinger = BollingerBands(20, csvData.Close);    
-    // std::ofstream file("bollinger_results.csv");
-    // dump_csv(file, bollinger);
-    // std::cout << bollinger << std::endl;
+    xarray<double> bollinger = BollingerBands(20, csvData.Close);    
+    std::ofstream file("bollinger_results.csv");
+    dump_csv(file, bollinger);
+    std::cout << bollinger << std::endl;
 
     // VWAP
     // xarray<double> vwap = VolumeWeightedAveragePrice(csvData.High, csvData.Volume);
@@ -50,9 +50,13 @@ int main() {
     // std::cout << "EMA-26 vector size: " << ema_26.size() << std::endl;
 
     // ATR
-    xarray<double> atr = AverageTrueRange(csvData.High, csvData.Low, csvData.Close, 14);
-    std::cout << "ATR vector size: " << atr.size() << std::endl;
-    std::cout << atr << std::endl;
+    // xarray<double> atr = AverageTrueRange(csvData.High, csvData.Low, csvData.Close, 14);
+    // std::cout << "ATR vector size: " << atr.size() << std::endl;
+    // std::cout << atr << std::endl;
+
+    // MACD
+    // xarray<double> macd = MACD(csvData.Close);
+
 
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::milli> duration = end - start;

@@ -1,9 +1,11 @@
 #include <iostream>
 #include "xtensor/containers/xarray.hpp"
 #include "xtensor/containers/xadapt.hpp"
+#include "xtensor/containers/xtensor.hpp"
 #include "xtensor/views/xview.hpp"
 #include "xtensor/io/xio.hpp"
 #include "xtensor/io/xcsv.hpp"
+#include "xtensor/misc/xmanipulation.hpp"
 #include "xtensor/generators/xbuilder.hpp"
 
 using namespace xt;
@@ -19,6 +21,7 @@ xarray<double> SimpleMovingAverage(int period, const vector<double>& price) {
 
     int sma_size = length - period + 1;
     xarray<double> sma = empty<double>({sma_size});
+    xarray<double> empty_prefix = empty<double>({period-1});
     double currSum = 0.0;
     
     // Calculating SMA for 1st window
@@ -32,7 +35,7 @@ xarray<double> SimpleMovingAverage(int period, const vector<double>& price) {
         currSum = currSum - price[i-1] + price[i+period-1];
         sma(i) = currSum / period;
     }
-    return sma;
+    return concatenate(xtuple(empty_prefix, sma), 0);
 }
 
 // Calculating the standard Deviation over the price of the stock
@@ -44,6 +47,7 @@ xarray<double> StandardDeviation(int period, const vector<double>& price) {
     }
     int stddev_size = length - period + 1;
     xarray<double> stdDev = empty<double>({stddev_size});
+    xarray<double> empty_prefix = empty<double>({period-1});
 
     double mean = 0.0;
     double m2 = 0.0;
@@ -67,7 +71,7 @@ xarray<double> StandardDeviation(int period, const vector<double>& price) {
         m2 += (new_val - old_val) * (new_val - mean + old_val - old_mean);
         stdDev(i) = sqrt(std::max(0.0, m2 / period));
     }
-    return stdDev;
+    return concatenate(xtuple(empty_prefix, stdDev), 0);
 }
 
 // Calculating the upper and lower price ranges of the Bollinger Band
@@ -115,6 +119,7 @@ xarray<double> ExponentialMovingAverage(int period, const vector<double>& price)
 
     int ema_size = length - period + 1;
     xarray<double> ema = empty<double>({ema_size});
+    xarray<double> empty_prefix = empty<double>({period-1});
 
     double smoothing = 2.0 / (period + 1);
     double prevEMA = 0.0;
@@ -131,10 +136,10 @@ xarray<double> ExponentialMovingAverage(int period, const vector<double>& price)
         ema(i) = currEMA;
         prevEMA = currEMA;
     }
-    return ema;
+    return concatenate(xtuple(empty_prefix, ema), 0);
 }
 
-// Calaculating the Average True Range of the stock over a period
+// Calaculating the Average True Range (ATR) of the stock over a period
 xarray<double> AverageTrueRange(
     const vector<double>& high, const vector<double>& low, const vector<double>& close, 
     int period=14) 
@@ -176,4 +181,21 @@ xarray<double> AverageTrueRange(
         p_atr = curr_atr;
     }
     return atr;
+}
+
+// Calculating the MACD (Moving Average Convergence Divergence) Line and Signal Line
+xarray<double> MACD(const vector<double>& price) {
+    xarray<double> ema_12 = ExponentialMovingAverage(12, price);
+    xarray<double> ema_26 = ExponentialMovingAverage(26, price);
+
+    // Calculating the MACD Line
+    xarray<double> macd = ema_12 - ema_26;
+    std::cout << "MACD array size: " << macd.size() << std::endl;
+    std::vector<double> macd_v (macd.begin(), macd.end());
+    // Calculating the Signal Line
+    xarray<double> signal_line = ExponentialMovingAverage(9, macd_v);
+    std::cout << "Signal Line size: " << signal_line.size() << std::endl;
+
+    // Just returning the MACD line for now.
+    return macd;
 }
