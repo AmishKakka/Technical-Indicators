@@ -130,6 +130,7 @@ xarray<double> ExponentialMovingAverage(int period, const vector<double>& price)
         prevEMA += price[i];
     }
     ema(0) = prevEMA / period;
+    prevEMA = ema(0);
 
     for (int i=1; i<ema_size; i++) {
         currEMA = (price[period+i-1] * smoothing) + (prevEMA * (1-smoothing));
@@ -190,12 +191,13 @@ xarray<double> MACD(const vector<double>& price) {
 
     // Calculating the MACD Line
     xarray<double> macd = ema_12 - ema_26;
-    std::cout << "MACD array size: " << macd.size() << std::endl;
+    // Taking the macd line as 'vector' to pass to the EMA function.
     std::vector<double> macd_v (macd.begin(), macd.end());
     // Calculating the Signal Line
     xarray<double> signal_line = ExponentialMovingAverage(9, macd_v);
-    std::cout << "Signal Line size: " << signal_line.size() << std::endl;
 
-    // Just returning the MACD line for now.
-    return macd;
+    xarray<double> macd_signal_lines = stack(xtuple(macd, signal_line), 1);
+    
+    // Returning both the MACD line and the Signal line
+    return macd_signal_lines;
 }

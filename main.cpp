@@ -9,7 +9,7 @@ using std::vector;
 
 
 int main() {
-    struct DataFrame csvData = readCSV("AAPL_10y_1d.csv");
+    struct DataFrame csvData = readCSV("AAPL_6mo_1h.csv");
     long int total_points = csvData.Close.size();
 
     // for (long int i=0; i<total_points; i++) {
@@ -34,10 +34,10 @@ int main() {
     // std::cout << "250-SMA vector size: " << sma_250.size() << std::endl;
 
     // Bollinger Bands
-    xarray<double> bollinger = BollingerBands(20, csvData.Close);    
-    std::ofstream file("bollinger_results.csv");
-    dump_csv(file, bollinger);
-    std::cout << bollinger << std::endl;
+    // xarray<double> bollinger = BollingerBands(20, csvData.Close);    
+    // std::ofstream file("bollinger_results.csv");
+    // dump_csv(file, bollinger);
+    // std::cout << bollinger << std::endl;
 
     // VWAP
     // xarray<double> vwap = VolumeWeightedAveragePrice(csvData.High, csvData.Volume);
@@ -55,8 +55,10 @@ int main() {
     // std::cout << atr << std::endl;
 
     // MACD
-    // xarray<double> macd = MACD(csvData.Close);
-
+    xarray<double> macd = MACD(csvData.Close);
+    std::cout << "MACD and Signal line array size: " << macd.size() << std::endl;
+    std::ofstream file("macd_results.csv");
+    dump_csv(file, macd);
 
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::milli> duration = end - start;
