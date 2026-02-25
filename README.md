@@ -111,16 +111,17 @@ But, the xtensor framework in C++ is ***just faster***, taking **0.099 ms**.
         cmake --build ./build --config Release && ./build/main
         ```
 
-5. Removing the 'build' folder 
-    ```rm -rf build```
-
-6. To get the financial data, we use yfinance and for plotting we use matplotlib.
+5. To get the financial data, we use yfinance and for plotting we use matplotlib.
     ```sh
     pip3 install yfinance matplotlib
     ```
 
+6. Removing the 'build' folder 
+    ```rm -rf build```
+
+
 # Pointers
-1. Add more indicators like RSI, Average True Range, and MACD.
+1. Add more indicators like RSI, ~~Average True Range~~, and ~~MACD~~.
 
 2. Find a way to use these functions (SMA, EMA, and others) through Python directly in code.
 
